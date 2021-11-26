@@ -12,6 +12,6 @@ setuptools.setup(
         "Bug Tracker": "https://github.com/sjmillius/lightweight-charts/issues"
     },
     license='Apache License 2.0',
-    packages=['lightweight-charts'],
+    packages=['lightweight_charts'],
     install_requires=['jinja2', 'pandas'],
 )

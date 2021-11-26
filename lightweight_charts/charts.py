@@ -130,7 +130,7 @@ class Series:
             itertools.chain(*[marker._spec() for marker in self._markers]))))
 
   def _repr_html_(self):
-    return self.chart._repr_html_()
+    return self._chart._repr_html_()
 
 
 class Chart:

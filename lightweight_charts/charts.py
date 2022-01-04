@@ -1,5 +1,8 @@
 """Experimental simple wrapper for tradingview's lightweight-charts."""
 
+from .model_generated import *
+
+import copy
 import dataclasses
 import itertools
 import jinja2
@@ -140,12 +143,53 @@ class Chart:
                data: pd.DataFrame = None,
                width: int = 400,
                height: int = 300,
-               **kwargs):
-    self.width = width
-    self.height = height
-    self.options = kwargs
+               crosshair: Optional[CrosshairOptions] = None,
+               grid: Optional[GridOptions] = None,
+               handle_scale: Optional[Union[HandleScaleOptions, bool]] = None,
+               handle_scroll: Optional[Union[HandleScrollOptions, bool]] = None,
+               kinetic_scroll: Optional[KineticScrollOptions] = None,
+               layout: Optional[LayoutOptions] = None,
+               left_price_scale: Optional[VisiblePriceScaleOptions] = None,
+               localization: Optional[LocalizationOptions] = None,
+               overlay_price_scales: Optional[OverlayPriceScaleOptions] = None,
+               price_scale: Optional[PriceScaleOptions] = None,
+               right_price_scale: Optional[VisiblePriceScaleOptions] = None,
+               time_scale: Optional[TimeScaleOptions] = None,
+               watermark: Optional[WatermarkOptions] = None,
+               options: Optional[ChartOptions] = None):
+    self.options = copy.deepcopy(options) if options else ChartOptions()
     self.series = []
     self._data = data
+
+    # Set options overrides.
+    self.options.width = width
+    self.options.height = height
+    if crosshair:
+      self.options.crosshair = copy.deepcopy(crosshair)
+    if grid:
+      self.options.grid = copy.deepcopy(grid)
+    if handle_scale:
+      self.options.handle_scale = copy.deepcopy(handle_scale)
+    if handle_scroll:
+      self.options.handle_scale = copy.deepcopy(handle_scroll)
+    if kinetic_scroll:
+      self.options.kinetic_scroll = copy.deepcopy(kinetic_scroll)
+    if layout:
+      self.options.layout = copy.deepcopy(layout)
+    if left_price_scale:
+      self.options.left_price_scale = copy.deepcopy(left_price_scale)
+    if localization:
+      self.options.localization = copy.deepcopy(localization)
+    if overlay_price_scales:
+      self.options.overlay_price_scales = copy.deepcopy(overlay_price_scales)
+    if price_scale:
+      self.options.price_scale = copy.deepcopy(price_scale)
+    if right_price_scale:
+      self.options.right_price_scale = copy.deepcopy(right_price_scale)
+    if time_scale:
+      self.options.time_scale = copy.deepcopy(time_scale)
+    if watermark:
+      self.options.watermark = copy.deepcopy(watermark)
 
   def add(self, series: Series):
     self.series.append(series)
@@ -192,8 +236,7 @@ class Chart:
                **kwargs))
 
   def _spec(self) -> _ChartSpec:
-    options = {'width': self.width, 'height': self.height, **self.options}
-    return _ChartSpec(options=options,
+    return _ChartSpec(options=self.options.to_json(),
                       series=[series._spec() for series in self.series])
 
   def _repr_html_(self):

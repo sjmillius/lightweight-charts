@@ -10,7 +10,7 @@ import json
 import pandas as pd
 import uuid
 
-from typing import List, Dict
+from typing import Dict, Optional, List
 
 _TEMPLATE = jinja2.Template("""
    <script src="{{ base_url }}lightweight-charts.standalone.production.js"></script> 
